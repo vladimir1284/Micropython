@@ -1,0 +1,98 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>
+        ESP32 Project!
+    </title>
+    <style type="text/css">
+        #title {
+            font-size: 64px;
+        }
+
+        .table-value {
+            font-size: 160px;
+            color: #999;
+        }
+    </style>
+    <script src="gauge.min.js"></script>
+    <script src="input-knobs.js"></script>
+    <script type="text/javascript">
+        get_rand_number();
+
+        function send_delay(val) {
+            let data = "delay=" + String(val);
+            let url = "/send_data";
+            fetch(url, {
+                method: 'POST', // or 'PUT'
+                body: data, // data can be `string` or {object}!
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).catch(error => console.error('Error:', error))
+                .then(response => console.log('Success:', response));
+        }
+
+        function changeEventHandler(slider) {
+            send_delay(slider.value);
+        }
+
+        function get_rand_number() {
+            fetch("/get_rand_number").then(function (response) {
+                let contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return response.json().then(function (json) {
+                        document.getElementById('rand-number').innerHTML = json.rand_number;
+                        document.getElementById("gauge1").setAttribute('data-value', 35 + (json.rand_number % 70) / 10.0);
+                        setTimeout(get_rand_number, 2000);
+                    });
+                } else {
+                    console.log("Oops, we haven't got JSON!");
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center" id="title">
+                    First ESP32 PicoWeb Async Example
+                </h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <input type="range" class="input-knob" min="100" max="3000" step="100"
+                    onchange="changeEventHandler(this)" />
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-4">
+                <h2 class="text-primary">Random number from ESP32</h2>
+                <hr>
+                <div class="table-value" id="rand-number">
+                    00
+                </div>
+            </div>
+            <div class="col-4">
+                <canvas id="gauge1" data-type="linear-gauge" data-width="300" data-height="300" data-border-radius="0"
+                    data-borders="10" data-bar-begin-circle="0" data-minor-ticks="5" data-value="60" data-min-value="0"
+                    data-max-value="200" data-title="lts" data-major-ticks="0,50,100,150,200" data-ticks-width="10"
+                    data-ticks-width-minor="5" data-bar-width="20" data-highlights="false"
+                    data-color-value-box-shadow="false" data-value-box-stroke="0"
+                    data-color-value-box-background="false" data-value-int="2" data-value-dec="0"></canvas>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
