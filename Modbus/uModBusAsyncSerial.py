@@ -101,7 +101,7 @@ class uModBusSerial:
             #     #machine.idle()
             #     await asyncio.sleep_ms(2)
             #time.sleep_ms(1 + self.char_time_ms)
-            await asyncio.sleep_ms(1 + self.char_time_ms)
+            #await asyncio.sleep_ms(1 + self.char_time_ms)
             self._ctrlPin(0)
         
         response = await self._uart_read()

@@ -4,11 +4,10 @@ import uasyncio as asyncio
 
 tx=Pin(1,Pin.OUT)                                                                                                                                 
 rx=Pin(3,Pin.IN) 
-mbMaster = uModBusSerial(0, 19200, 8, 1, None, [tx,rx], 16)
+mbMaster = uModBusSerial(0, baudrate=19200, pins=[tx,rx])
 
 async def main_loop():
     while(1):
-        print("ok")
         result = await mbMaster.read_holding_registers(1,0,1,signed=False)
         print(result)
         await asyncio.sleep(3)
