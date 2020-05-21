@@ -13,6 +13,7 @@
 BluetoothSerial SerialBT;
 
 char lastCommand;
+unsigned long lastRecieved;
 
 int speed;
 
@@ -20,8 +21,8 @@ bool configuring;
 String config_str;
 Configurator cfgs = Configurator();
 
-Motor motorL = Motor(pinENA, pinIN1, pinIN2, LEDC_CHANNEL_0);
-Motor motorR = Motor(pinENB, pinIN3, pinIN4, LEDC_CHANNEL_1);
+Motor motorR = Motor(pinENA, pinIN1, pinIN2, LEDC_CHANNEL_0);
+Motor motorL = Motor(pinENB, pinIN3, pinIN4, LEDC_CHANNEL_1);
 
 void setup()
 {
@@ -37,17 +38,25 @@ void setup()
   configuring = false;
 
   cfgs.init();
+  float factor = cfgs.getLfactor();
+  Serial.print("Factor L: ");
+  Serial.println(factor);
+  motorL.init(1);
 
-  motorL.init(cfgs.getLfactor());
-  motorR.init(cfgs.getRfactor());
+  factor = cfgs.getRfactor();
+  Serial.print("Factor R: ");
+  Serial.println(factor);
+  motorR.init(1);
 
-  speed = 5;
+  speed = 2;
+  lastRecieved = millis();
 }
 
 void loop()
 {
   if (SerialBT.available())
   {
+    lastRecieved = millis();
     char cmd = SerialBT.read();
     if (DEBUG)
     {
@@ -88,33 +97,37 @@ void loop()
         break;
 
       case 'R': // Rigth
-        motorL.moveForward(speed);
-        motorR.fullStop();
+        motorL.moveForward(8);
+        motorR.moveBackward(8);
         break;
 
       case 'L': // left
-        motorR.moveForward(speed);
-        motorL.fullStop();
+        motorR.moveForward(8);
+        motorL.moveBackward(8);
         break;
 
       case 'I': // Forward right
-        motorR.moveForward(speed / TURN_FACTOR);
-        motorL.moveForward(speed);
+        //motorR.moveForward(speed / TURN_FACTOR);
+        motorR.fullStop();
+        motorL.moveForward(2 * speed);
         break;
 
       case 'G': // Forward left
-        motorL.moveForward(speed / TURN_FACTOR);
-        motorR.moveForward(speed);
+        //motorL.moveForward(speed / TURN_FACTOR);
+        motorL.fullStop();
+        motorR.moveForward(2 * speed);
         break;
 
       case 'J': // Backward right
-        motorR.moveBackward(speed / TURN_FACTOR);
-        motorL.moveBackward(speed);
+        //motorR.moveBackward(speed / TURN_FACTOR);
+        motorR.fullStop();
+        motorL.moveBackward(2 * speed);
         break;
 
       case 'H': // Backward left
-        motorL.moveBackward(speed / TURN_FACTOR);
-        motorR.moveBackward(speed);
+        //motorL.moveBackward(speed / TURN_FACTOR);
+        motorL.fullStop();
+        motorR.moveBackward(2 * speed);
         break;
 
       case '#': // Start Configuration
@@ -138,6 +151,15 @@ void loop()
       default:
         break;
       }
+    }
+  }
+  else
+  {
+    if (millis() - lastRecieved > CMD_DELAY)
+    {
+      // Stop motor if no cmd
+      motorL.fullStop();
+      motorR.fullStop();
     }
   }
 

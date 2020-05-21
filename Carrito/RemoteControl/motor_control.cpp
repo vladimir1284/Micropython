@@ -45,8 +45,8 @@ void Motor::moveForward(int speed)
 {
     if ((currentState != BACKWARD) && !delayNeeded)
     {
-        digitalWrite(pinM1, HIGH);
-        digitalWrite(pinM2, LOW);
+        digitalWrite(pinM1, LOW);
+        digitalWrite(pinM2, HIGH);
 
         ledcWrite(channel, computeSpeed(speed));
         currentState = FORWARD;
@@ -61,8 +61,8 @@ void Motor::moveBackward(int speed)
 {
     if ((currentState != FORWARD) && !delayNeeded)
     {
-        digitalWrite(pinM1, LOW);
-        digitalWrite(pinM2, HIGH);
+        digitalWrite(pinM1, HIGH);
+        digitalWrite(pinM2, LOW);
 
         ledcWrite(channel, computeSpeed(speed));
         currentState = BACKWARD;
