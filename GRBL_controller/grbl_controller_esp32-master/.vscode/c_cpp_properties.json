@@ -6,10 +6,20 @@
                 "C:\\Users\\Acer\\AppData\\Local\\Arduino15\\packages\\esp32\\tools\\**",
                 "C:\\Users\\Acer\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.1\\**",
                 "C:\\Users\\Acer\\AppData\\Local\\Arduino15\\packages\\esp8266\\tools\\**",
-                "C:\\Users\\Acer\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.5.0-beta2\\**"
+                "C:\\Users\\Acer\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.5.0-beta2\\**",
+                "/home/vladimir/.arduino15/packages/esp32/hardware/esp32/1.0.4/**",
+                "/home/vladimir/.arduino15/packages/esp32/tools/**"
             ],
             "forcedInclude": [],
             "intelliSenseMode": "msvc-x64"
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/vladimir/.arduino15/packages/esp32/tools/**",
+                "/home/vladimir/.arduino15/packages/esp32/hardware/esp32/1.0.4/**"
+            ],
+            "forcedInclude": []
         }
     ],
     "version": 4

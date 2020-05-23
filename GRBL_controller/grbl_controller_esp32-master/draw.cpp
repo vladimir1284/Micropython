@@ -589,7 +589,7 @@ void updateBtnState( void) {
       } else {
         bt0 = getButton(x , y , btnDefNormal) ;  // convertit x, y en n° de bouton ; retourne 0 si en dehors de la zone des boutons; sinon retourne 1 à 12
       }  
-    Serial.print("x=") ; Serial.print(x) ; Serial.print( " ," ) ; Serial.print( y) ; Serial.print( " ," ) ; Serial.println(bt0) ;
+//    Serial.print("x=") ; Serial.print(x) ; Serial.print( " ," ) ; Serial.print( y) ; Serial.print( " ," ) ; Serial.println(bt0) ;
     } else {
 //      Serial.print("!") ; 
     }
@@ -1347,7 +1347,7 @@ void drawDataOnOverwritePage() {                                // to do : text 
 
 
 // ******************************** touch calibrate ********************************************
-#define DEBUG_CALIBRATION
+//#define DEBUG_CALIBRATION
 void touch_calibrate() {
   uint16_t calData[5];
   uint8_t calDataOK = 0;
@@ -1397,7 +1397,6 @@ void touch_calibrate() {
     Serial.println("Use calData");
     #endif
     tft.setTouch(calData);
-    tft.printCalibration();
   } else {
     // data not valid so recalibrate
     #ifdef DEBUG_CALIBRATION
