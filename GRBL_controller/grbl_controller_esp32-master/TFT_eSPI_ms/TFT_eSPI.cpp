@@ -13,6 +13,8 @@
   Bodmer: Added RPi 16 bit display support
  ****************************************************/
 
+// modified by vrd to support parallel LCD
+
 #include "TFT_eSPI.h"
 
 #include <pgmspace.h>
@@ -78,7 +80,7 @@ inline void TFT_eSPI::spi_end_read(void){
 #endif
 }
 
-#if defined (TOUCH_CS) && defined (SPI_TOUCH_FREQUENCY) // && !defined(ESP32_PARALLEL)
+#if defined (TOUCH_CS) && defined (SPI_TOUCH_FREQUENCY) && !defined(ESP32_PARALLEL)
 
   inline void TFT_eSPI::spi_begin_touch(void){
   #if defined (SPI_HAS_TRANSACTION) && defined (SUPPORT_TRANSACTIONS)

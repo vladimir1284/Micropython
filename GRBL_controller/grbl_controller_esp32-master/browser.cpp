@@ -51,7 +51,9 @@ void initWifi() {
       //Serial.println("\nConnected to "+WiFi.SSID()+" Use IP address: "+WiFi.localIP().toString()); // Report which SSID and IP is in use
   } else if (wifiType == ESP32_ACT_AS_AP) {
     WiFi.softAP( MY_SSID , MY_PASSWORD);
-    //Serial.println("\nESP has IP address: "+ WiFi.softAPIP().toString()); // Report which SSID and IP is in use
+    Serial.println("\nESP has IP address: "+ WiFi.softAPIP().toString()); // Report which SSID and IP is in use
+    Serial.println("MY_SSID: "+ String(MY_SSID)); // Report which SSID and IP is in use
+    Serial.println("MY_PASSWORD: "+String( MY_PASSWORD)); // Report which SSID and IP is in use
   }  
   WiFi.setSleep(false);
   //----------------------------------------------------------------------   
@@ -79,26 +81,26 @@ void retrieveWifiParam(void){  // get the wifi parameters (type, SSID, password)
               // else use those from config (not saved)
     char myPassword[] = MY_PASSWORD ;
     char mySsid[] = MY_SSID ;
-    if ( checkWifiOnSD() ) {   // true when SD contains valid parameters
-      // save parameters in preferences
-      preferences.putChar("WIFI", wifiType ) ;
-      preferences.putString("PASSWORD", wifiPassword ) ;
-      preferences.putString("SSID", wifiSsid ) ;
-      preferences.putChar("wifiDef", 1); // 1 is used to say that a set of wifi preferences is saved
-      //Serial.println("using SD param") ;
-    } else if ( preferences.getChar("wifiDef", 0) ) {  // return 0 when no set is defined and 1 when wifi is defined in preferences
-      // search in preferences
-      wifiType = preferences.getChar("WIFI", NO_WIFI  ) ; // if key does not exist return NO_WIFI
-      preferences.getString("PASSWORD" , wifiPassword , sizeof(wifiPassword)  ) ;
-      preferences.getString("SSID", wifiSsid , sizeof(wifiSsid) ) ;
-      //Serial.println("using preference param") ;
-    } else {
+    // if ( checkWifiOnSD() ) {   // true when SD contains valid parameters
+    //   // save parameters in preferences
+    //   preferences.putChar("WIFI", wifiType ) ;
+    //   preferences.putString("PASSWORD", wifiPassword ) ;
+    //   preferences.putString("SSID", wifiSsid ) ;
+    //   preferences.putChar("wifiDef", 1); // 1 is used to say that a set of wifi preferences is saved
+    //   //Serial.println("using SD param") ;
+    // } else if ( preferences.getChar("wifiDef", 0) ) {  // return 0 when no set is defined and 1 when wifi is defined in preferences
+    //   // search in preferences
+    //   wifiType = preferences.getChar("WIFI", NO_WIFI  ) ; // if key does not exist return NO_WIFI
+    //   preferences.getString("PASSWORD" , wifiPassword , sizeof(wifiPassword)  ) ;
+    //   preferences.getString("SSID", wifiSsid , sizeof(wifiSsid) ) ;
+    //   //Serial.println("using preference param") ;
+    // } else {
       // use those from config.h
       wifiType = WIFI ;
       strcpy(wifiPassword, myPassword) ;
       strcpy(wifiSsid, mySsid) ;
       //Serial.println("using firmware param") ;
-    }
+    //}
     //Serial.print("wifiType=") ; Serial.println(wifiType) ;
     //Serial.print("wifiPassword=") ; Serial.println(wifiPassword) ;
     //Serial.print("wifiSsid=") ; Serial.println(wifiSsid) ;

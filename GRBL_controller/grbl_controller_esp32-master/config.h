@@ -1,19 +1,69 @@
+/*      PINOUT
+
+ === ESP32 pins used for the parallel interface TFT ===
+ Defined in User_Setups/Setup14_ILI9341_Parallel.h
+ LCD_CS   33  // Chip select control pin
+ LCD_RS   25  // Data Command control pin - use a pin in the range 0-31
+ LCD_RST  -1  // Reset pin
+
+ LCD_WR    4  // Write strobe control pin - use a pin in the range 0-31
+ LCD_RD    2
+
+ LCD_D0   21  // Must use pins in the range 0-31 for the data bus
+ LCD_D1   26  // so a single register write sets/clears all bits
+ LCD_D2   13
+ LCD_D3   15
+ LCD_D4   17
+ LCD_D5   16
+ LCD_D6   27
+ LCD_D7   22
+
+ === ESP32 pins used for the 4-wires TOUCHSCREEN ===
+  Defined in config.h 
+ LCD_RD must be set HIGH to make D0-D7 high-z before reading position!!
+ YP 33 // must be an analog pin!
+ XM 25 // can be a digital pin
+ XA 36 // must be an analog pin! (Connected throught a resistor of 5K to XM)
+ YM 26 // can be a digital pin
+ XP 21 // can be a digital pin
+
+ === ESP32 pins used for the SD card ===
+ SD_SS  05 Defined in config.h 
+ SD_DI  23
+ SD_DO  19
+ SD_SCK 18
+
+ === ESP32 pins used for the Arduino UNO ===
+  Defined in config.h 
+ SERIAL2_RXPIN 14
+ SERIAL2_TXPIN 12
+*/
+
 #ifndef _config_h
 #define _config_h
+
+
+#include "TouchScreen_ms/TouchScreen_ms.h"
+// Pins used for the 4-wires TOUCHSCREEN
+#define YP 33 // must be an analog pin!
+#define XM 25 // can be a digital pin
+#define XA 36 // must be an analog pin!
+#define YM 26 // can be a digital pin
+#define XP 21 // can be a digital pin
 
 #include "TFT_eSPI_ms/TFT_eSPI.h"
 
 #define ESP32_VERSION "v1.0.t"
 
 // decide if you will use Wifi or not (and how)
-#define WIFI ESP32_ACT_AS_STATION               // select between NO_WIFI, ESP32_ACT_AS_STATION, ESP32_ACT_AS_AP 
+#define WIFI ESP32_ACT_AS_AP               // select between NO_WIFI, ESP32_ACT_AS_STATION, ESP32_ACT_AS_AP 
 
 // If wifi is used, set the parameter to identify the access point (= the router when ESP32_ACT_AS_STATION or the ESP32 when ESP32_ACT_AS_AP)
-#define MY_SSID "bbox2-58c4"       // replace by the name of your access point (when act as station) or the name you assign to your device (when act as acces point)
+#define MY_SSID "CNC"       // replace by the name of your access point (when act as station) or the name you assign to your device (when act as acces point)
 
 // for ESP32_ACT_AS_STATION , set the password to get access to your access point (router)
 // for ESP_ACT_AS_AP, set the password you want to use to protect your ESP32 ( can be empty)
-#define MY_PASSWORD "your password" // replace by your password 
+#define MY_PASSWORD "cncpass84" // replace by your password 
 // select your language between EN, FR, DE
 #define LANGUAGE EN
 
@@ -22,28 +72,17 @@
 
 // Here some pins (GPIO) being used
 //************************************
-// pin (GPIO) for touch screen are defined in tft_espi User_Setup.h file
-//#define TS_CS_PIN  15
+// 
 
-// Note: SPI is currently hardcoded for using following pins
-// MOSI=13, MISO=12, SCK=14
-// Those are used for the display, the touch panel and the SD card reader.
-
-#define TFT_LED_PIN 25       // pin connected to led of lcd; pin has to be high to set led ON
-
-// other TFT pins are defined in tft_espi User_Setup.h file
-
-#define SD_CHIPSELECT_PIN 26  //5  // pin for SD card selection // to change probably
+#define SD_CHIPSELECT_PIN 5  // pin for SD card selection // to change probably
 
 // pins for Serial to GRBL (it uses Serial2 UART)
-#define SERIAL2_RXPIN 16
-#define SERIAL2_TXPIN 17
-
-// pin for Nunchuk are currently the defalult I2C pin so pins 21, 22
+#define SERIAL2_RXPIN 14
+#define SERIAL2_TXPIN 12
 
 // This is the file name used to store the touch coordinate in the SPIFFS from ESP32 (in es32 flash memory)
-// calibration data. Cahnge the name to start a new calibration.
-#define CALIBRATION_FILE "/TouchCalData3"
+// calibration data. Change the name to start a new calibration.
+#define CALIBRATION_FILE "/TouchCalData4"
 
 // Set REPEAT_CAL to true instead of false to run calibration
 // again, otherwise it will only be done once.
@@ -52,7 +91,7 @@
 
 // the max speed of jogging in X and Y when using the nunchuk or the Move commands on TFT can easily be modified here.
 // it seems that 5000 (mm/min) is a good value for RS-CNC32
-#define MAX_XY_SPEED_FOR_JOGGING 5000 
+#define MAX_XY_SPEED_FOR_JOGGING 500 
 
 // note: this project allows to define up to 11 GRBL set of commands (makros) that can be called from setup screen.
 // Those are defined by the user on a sd card and loaded on request into the ESP32 flash memory system (SPIFFS)
