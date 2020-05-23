@@ -1,64 +1,19 @@
-/*      PINOUT
-
- === ESP32 pins used for the parallel interface TFT ===
- LCD_CS   33  // Chip select control pin
- LCD_RS   15  // Data Command control pin - use a pin in the range 0-31
- LCD_RST  32  // Reset pin
-
- LCD_WR    4  // Write strobe control pin - use a pin in the range 0-31
- LCD_RD    2
-
- LCD_D0   12  // Must use pins in the range 0-31 for the data bus
- LCD_D1   13  // so a single register write sets/clears all bits
- LCD_D2   26
- LCD_D3   25
- LCD_D4   17
- LCD_D5   16
- LCD_D6   27
- LCD_D7   14
-
- === ESP32 pins used for the 4-wires TOUCHSCREEN ===
- LCD_RD must be set HIGH to make D0-D7 high-z before reading position!!
- YP 33 // must be an analog pin!
- XM 15 // must be an analog pin!
- YM 13 // can be a digital pin
- XP 12 // can be a digital pin
-
- === ESP32 pins used for the SD card ===
- SD_SS   5
- SD_DI  23
- SD_DO  19
- SD_SCK 18
-
- === ESP32 pins used for the Arduino UNO ===
- SERIAL2_RXPIN 03
- SERIAL2_TXPIN 01
-*/
-
 #ifndef _config_h
 #define _config_h
-
-
-#include "TouchScreen.h"
-// Pins used for the 4-wires TOUCHSCREEN
-#define YP 33 // must be an analog pin!
-#define XM 15 // must be an analog pin!
-#define YM 13 // can be a digital pin
-#define XP 12 // can be a digital pin
 
 #include "TFT_eSPI_ms/TFT_eSPI.h"
 
 #define ESP32_VERSION "v1.0.t"
 
 // decide if you will use Wifi or not (and how)
-#define WIFI ESP32_ACT_AS_AP               // select between NO_WIFI, ESP32_ACT_AS_STATION, ESP32_ACT_AS_AP 
+#define WIFI ESP32_ACT_AS_STATION               // select between NO_WIFI, ESP32_ACT_AS_STATION, ESP32_ACT_AS_AP 
 
 // If wifi is used, set the parameter to identify the access point (= the router when ESP32_ACT_AS_STATION or the ESP32 when ESP32_ACT_AS_AP)
-#define MY_SSID "CNC"       // replace by the name of your access point (when act as station) or the name you assign to your device (when act as acces point)
+#define MY_SSID "bbox2-58c4"       // replace by the name of your access point (when act as station) or the name you assign to your device (when act as acces point)
 
 // for ESP32_ACT_AS_STATION , set the password to get access to your access point (router)
 // for ESP_ACT_AS_AP, set the password you want to use to protect your ESP32 ( can be empty)
-#define MY_PASSWORD "ganador" // replace by your password 
+#define MY_PASSWORD "your password" // replace by your password 
 // select your language between EN, FR, DE
 #define LANGUAGE EN
 
@@ -74,20 +29,20 @@
 // MOSI=13, MISO=12, SCK=14
 // Those are used for the display, the touch panel and the SD card reader.
 
-// #define TFT_LED_PIN 25       // pin connected to led of lcd; pin has to be high to set led ON
+#define TFT_LED_PIN 25       // pin connected to led of lcd; pin has to be high to set led ON
 
 // other TFT pins are defined in tft_espi User_Setup.h file
 
-#define SD_CHIPSELECT_PIN 5  // pin for SD card selection // to change probably
+#define SD_CHIPSELECT_PIN 26  //5  // pin for SD card selection // to change probably
 
 // pins for Serial to GRBL (it uses Serial2 UART)
-#define SERIAL2_RXPIN 03
-#define SERIAL2_TXPIN 01
+#define SERIAL2_RXPIN 16
+#define SERIAL2_TXPIN 17
 
 // pin for Nunchuk are currently the defalult I2C pin so pins 21, 22
 
 // This is the file name used to store the touch coordinate in the SPIFFS from ESP32 (in es32 flash memory)
-// calibration data. Change the name to start a new calibration.
+// calibration data. Cahnge the name to start a new calibration.
 #define CALIBRATION_FILE "/TouchCalData3"
 
 // Set REPEAT_CAL to true instead of false to run calibration
