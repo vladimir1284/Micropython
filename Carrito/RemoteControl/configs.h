@@ -32,7 +32,7 @@
 // use 13 bit precission for LEDC timer
 #define LEDC_TIMER_13_BIT  13
 // use 5000 Hz as a LEDC base frequency
-#define LEDC_BASE_FREQ     5000
+#define LEDC_BASE_FREQ     1200
 
 // ------------ EEPROM -----------------
 #define ADDRESS_INITAL_SPEED 0

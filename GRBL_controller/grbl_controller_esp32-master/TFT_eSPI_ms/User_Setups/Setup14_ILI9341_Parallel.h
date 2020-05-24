@@ -31,8 +31,8 @@
 #define TFT_DC   25  // Data Command control pin - use a pin in the range 0-31
 #define TFT_RST  -1  // Reset pin
 
-#define TFT_WR    4  // Write strobe control pin - use a pin in the range 0-31
-#define TFT_RD    2
+#define TFT_WR    2  // Write strobe control pin - use a pin in the range 0-31
+#define TFT_RD    4
 
 #define TFT_D0   21  // Must use pins in the range 0-31 for the data bus
 #define TFT_D1   26 // so a single register write sets/clears all bits

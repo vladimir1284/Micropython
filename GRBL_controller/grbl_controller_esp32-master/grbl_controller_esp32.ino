@@ -59,7 +59,7 @@ TouchScreen myTS = TouchScreen(XP, YP, XM, XA, YM, 330);
 #include "language.h"
 #include "draw.h"
 #include "FS.h"
-#include "nunchuk.h"
+#include "joystick.h"
 #include "com.h"
 //#include "SD.h"
 #include "SdFat.h"
@@ -127,9 +127,6 @@ boolean newGrblStatusReceived = false;
 char machineStatus[9]; // Iddle, Run, Alarm, ...
 volatile boolean waitOk = false;
 
-// Nunchuk data.
-extern boolean nunchukOK; // keep flag to detect a nunchuk at startup
-
 // type of wifi being used
 uint8_t wifiType; // can be NO_WIFI(= 0), ESP32_ACT_AS_STATION(= 1), ESP32_ACT_AS_AP(= 2)
 
@@ -151,7 +148,6 @@ void setup()
   // initialiser spiffs (pour relire la config)
   // détecter SD card (en principe rien à faire; SD.begin est appelé avec l'écran SD)
   // initialiser Wifi server
-  // teste la présence et initialise le nunchuck
   // initialiser les status (notamment affichage de l'écran)
   logBufferInit();      // initialise the log buffer
   Serial.begin(115200); // init UART for debug and for Gcode passthrough via USB PC
@@ -189,7 +185,7 @@ void setup()
   initButtons(); //initialise les noms des boutons, les boutons pour chaque page.
   dirLevel = -1; // negative value means that SD card has to be uploaded
 
-  //nunchuk_init();
+  joystick_init();
   prevPage = _P_NULL;
   currentPage = _P_INFO;
   updateFullPage = true;
@@ -245,11 +241,11 @@ void loop()
   drawUpdatedBtn();       // update color of button if pressed/released, apply actions foreseen for buttons (e.g. change currentPage)
   executeMainActionBtn(); //
 
-  // handle nunchuk if implemented
-  // if (nunchukOK && statusPrinting == PRINTING_STOPPED && (machineStatus[0] == 'I' || machineStatus[0] == 'J' || machineStatus[0] == '?'))
-  // { //read only if the GRBL status is Idle or Jog or ?? (this last is only for testing without GRBL
-  //   handleNunchuk();
-  // }
+  // handle joystick if implemented
+  if (statusPrinting == PRINTING_STOPPED && (machineStatus[0] == 'I' || machineStatus[0] == 'J' || machineStatus[0] == '?'))
+  { //read only if the GRBL status is Idle or Jog or ?? (this last is only for testing without GRBL
+    handleJoystick();
+  }
 
   getFromGrblAndForward(); // get char from serial GRBL and always decode them (check for OK, update machineStatus and positions),
                            // if statusprinting = PRINTING_FROM_USB or if telnet is active, then forward received char from GRBL to PC (via Serial)

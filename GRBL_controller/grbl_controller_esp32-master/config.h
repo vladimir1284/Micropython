@@ -6,8 +6,8 @@
  LCD_RS   25  // Data Command control pin - use a pin in the range 0-31
  LCD_RST  -1  // Reset pin
 
- LCD_WR    4  // Write strobe control pin - use a pin in the range 0-31
- LCD_RD    2
+ LCD_WR    2  // Write strobe control pin - use a pin in the range 0-31
+ LCD_RD    4
 
  LCD_D0   21  // Must use pins in the range 0-31 for the data bus
  LCD_D1   26  // so a single register write sets/clears all bits
@@ -92,6 +92,9 @@
 // the max speed of jogging in X and Y when using the nunchuk or the Move commands on TFT can easily be modified here.
 // it seems that 5000 (mm/min) is a good value for RS-CNC32
 #define MAX_XY_SPEED_FOR_JOGGING 500 
+#define JOYSTICK_X    39 
+#define JOYSTICK_Y    34 
+#define JOYSTICK_BTNS 35 
 
 // note: this project allows to define up to 11 GRBL set of commands (makros) that can be called from setup screen.
 // Those are defined by the user on a sd card and loaded on request into the ESP32 flash memory system (SPIFFS)

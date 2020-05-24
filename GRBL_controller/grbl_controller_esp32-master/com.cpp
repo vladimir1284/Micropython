@@ -4,7 +4,8 @@
 //#include "SD.h"
 #include "SdFat.h"
 #include "draw.h"
-#include "nunchuk.h"
+#include "joystick.h"
+//#include "nunchuk.h"
 #include <WiFi.h> 
 #include "telnet.h"
 #include "cmd.h"
