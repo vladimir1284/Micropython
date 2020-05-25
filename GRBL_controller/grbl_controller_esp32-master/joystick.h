@@ -2,6 +2,8 @@
 #ifndef JOYSTICK_H
 #define JOYSTICK_H
 
+#define DEBUG_JOYSTICK
+
 void joystick_init() ;
 
 uint8_t buttonZ() ;
