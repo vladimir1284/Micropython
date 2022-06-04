@@ -62,7 +62,9 @@ class Pump:
         self._lowerFloat = Pin(LOWER_FLOAT, Pin.IN, Pin.PULL_UP)
         self._upperFloat = Pin(UPPER_FLOAT, Pin.IN)
 
-        self._ultrasonic = HCSR04(TRIGGER_PIN, (LOWER_ULTRA,UPPER_ULTRA))
+        # self._ultrasonic = HCSR04(TRIGGER_PIN, (LOWER_ULTRA,UPPER_ULTRA))
+        self._lowerUltra = HCSR04(TRIGGER_PIN, LOWER_ULTRA, 5000)
+        self._upperUltra = HCSR04(TRIGGER_PIN, UPPER_ULTRA, 9000)
 
         self._state = 'IDLE'
         self._stateChange = time.time()
@@ -107,13 +109,15 @@ class Pump:
         self._stateChange = time.time()
         self._log.debug("{}-> State: {}".format(time.time(), self._state))
 
-    def getStatus(self):
+    async def getStatus(self):
+        tasks = (self._upperUltra.distance_cm(), self._lowerUltra.distance_cm())
+        res = await asyncio.gather(*tasks)
         return {
             'state': self._state,
             'upperFloat': self._upperFloat.value(),
-            'upperUltra': self._ultrasonic.distance_cm(UPPER_ULTRA),
+            'upperUltra': int(res[0]),
             'lowerFloat': self._lowerFloat.value(),
-            'lowerUltra': self._ultrasonic.distance_cm(LOWER_ULTRA),
+            'lowerUltra': int(res[1]),
             'pump': self._pump.value
         }
 
