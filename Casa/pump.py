@@ -7,6 +7,7 @@ import uasyncio as asyncio
 from micropython import const
 from machine import Pin
 from HCSR04 import HCSR04
+from DigitalInput import DigitalInput
 from settings import Settings
 
 try:
@@ -59,10 +60,13 @@ class Pump:
         self._cfg  = settings
 
         # High when tank is full
-        self._lowerFloat = Pin(LOWER_FLOAT, Pin.IN, Pin.PULL_UP)
-        self._upperFloat = Pin(UPPER_FLOAT, Pin.IN)
+        self._lowerFloat = DigitalInput(LOWER_FLOAT,
+                                        active_high = False,
+                                        interval = 10)
+        self._upperFloat = DigitalInput(UPPER_FLOAT,
+                                        active_high = False,
+                                        interval = 10)
 
-        # self._ultrasonic = HCSR04(TRIGGER_PIN, (LOWER_ULTRA,UPPER_ULTRA))
         self._lowerUltra = HCSR04(TRIGGER_PIN, LOWER_ULTRA, 5000)
         self._upperUltra = HCSR04(TRIGGER_PIN, UPPER_ULTRA, 9000)
 
@@ -75,8 +79,8 @@ class Pump:
             await asyncio.sleep(1) # Cycle every 1s
 
     def _idle(self):
-        if not self._upperFloat.value():
-            if self._lowerFloat.value():
+        if self._upperFloat.isActive():
+            if not self._lowerFloat.isActive():
                 self._pump.turnOn()
                 self._setState('PUMPING')
             else:
@@ -84,11 +88,11 @@ class Pump:
 
 
     def _pumping(self):
-        if not self._lowerFloat.value():
+        if self._lowerFloat.isActive():
             self._pump.turnOff()
             self._setState('WAIT')
         else:
-            if self._upperFloat.value():
+            if not self._upperFloat.isActive():
                 self._pump.turnOff()
                 self._setState('IDLE')
             else:
@@ -97,7 +101,7 @@ class Pump:
                     self._setState('ERROR')
                 
     def _wait(self):
-        if self._lowerFloat.value():
+        if not self._lowerFloat.isActive():
             self._pump.turnOn()
             self._setState('PUMPING')
 
@@ -114,9 +118,9 @@ class Pump:
         res = await asyncio.gather(*tasks)
         return {
             'state': self._state,
-            'upperFloat': self._upperFloat.value(),
+            'upperFloat': self._upperFloat.isActive(),
             'upperUltra': int(res[0]),
-            'lowerFloat': self._lowerFloat.value(),
+            'lowerFloat': self._lowerFloat.isActive(),
             'lowerUltra': int(res[1]),
             'pump': self._pump.value
         }
