@@ -10,10 +10,22 @@ from settings import Settings
 from machine import Pin, ADC
 
 
-#TODO instanciate Flowmeter
 flow = Pin(13, Pin.IN)
+
+pir1 = Pin(14, Pin.IN)
+pir2 = Pin(27, Pin.IN)
+pir3 = Pin(26, Pin.IN)
+
 vbat = ADC(Pin(33))
 vbat.atten(ADC.ATTN_11DB)
+
+powermeter = ADC(Pin(39))
+powermeter.atten(ADC.ATTN_11DB)
+ldr_taller = ADC(Pin(36))
+ldr_taller.atten(ADC.ATTN_11DB)
+
+door = ADC(Pin(34))
+door.atten(ADC.ATTN_11DB)
 
 loop = asyncio.get_event_loop()
 
