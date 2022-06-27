@@ -10,10 +10,11 @@ from machine import Pin, ADC
 
 from pump import Pump
 from DigitalOutputs import bomba
+from FlowMeter import FlowMeter
 from settings import Settings
 
 
-flow = Pin(13, Pin.IN)
+flow = FlowMeter(13)
 
 pir1 = Pin(14, Pin.IN)
 pir2 = Pin(27, Pin.IN)
@@ -41,7 +42,9 @@ def get_data(req, resp):
     values={
         'pump': await asyncio.gather(pump.getStatus()),
         'Vbat': vbat.read()*0.007,
-        'pwr': powermeter.read()
+        'pwr': powermeter.read(),
+        'ldr': ldr_taller.read(),
+        'flowmeter': flow.getStatus()
     }
     yield from picoweb.jsonify(resp, values)
 
