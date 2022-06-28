@@ -11,6 +11,7 @@ from machine import Pin, ADC
 from pump import Pump
 from DigitalOutputs import bomba
 from FlowMeter import FlowMeter
+from PowerMeter import PowerMeter
 from settings import Settings
 
 
@@ -23,8 +24,9 @@ pir3 = Pin(26, Pin.IN)
 vbat = ADC(Pin(33))
 vbat.atten(ADC.ATTN_11DB)
 
-powermeter = ADC(Pin(39))
-powermeter.atten(ADC.ATTN_11DB)
+powermeter = PowerMeter(39)
+
+
 ldr_taller = ADC(Pin(36))
 ldr_taller.atten(ADC.ATTN_11DB)
 
@@ -42,7 +44,7 @@ def get_data(req, resp):
     values={
         'pump': await asyncio.gather(pump.getStatus()),
         'Vbat': vbat.read()*0.007,
-        'pwr': powermeter.read(),
+        'pwr': powermeter.getStatus(),
         'ldr': ldr_taller.read(),
         'flowmeter': flow.getStatus()
     }
