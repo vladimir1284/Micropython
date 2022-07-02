@@ -16,7 +16,7 @@ class VoltMeter:
     def __init__(
         self,
         pin,
-        factor: float = 0.007,
+        factor: float = 0.00718,
         nSamples = 100,
         interval = 100):
         """
