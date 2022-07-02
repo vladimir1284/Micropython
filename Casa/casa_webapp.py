@@ -14,21 +14,22 @@ from FlowMeter import FlowMeter
 from PowerMeter import PowerMeter
 from VoltMeter import VoltMeter
 from settings import Settings
+from DigitalInput import DigitalInput
+from LDR import LDR
 
 
 flow = FlowMeter(13)
 
-pir1 = Pin(14, Pin.IN)
-pir2 = Pin(27, Pin.IN)
-pir3 = Pin(26, Pin.IN)
+pir1 = DigitalInput(14, active_high = True, interval = 10)
+pir2 = DigitalInput(27, active_high = True, interval = 10)
+pir3 = DigitalInput(26, active_high = True, interval = 10)
 
 vbat = VoltMeter(33)
 
 powermeter = PowerMeter(39)
 
 
-ldr_taller = ADC(Pin(36))
-ldr_taller.atten(ADC.ATTN_11DB)
+ldr_taller = LDR(36)
 
 door = ADC(Pin(34))
 door.atten(ADC.ATTN_11DB)
@@ -45,8 +46,13 @@ def get_data(req, resp):
         'pump':pump.getStatus(),
         'Vbat': vbat.getVoltage(),
         'pwr': powermeter.getStatus(),
-        'ldr': ldr_taller.read(),
-        'flowmeter': flow.getStatus()
+        'ldr': ldr_taller.getLuminosity(),
+        'flowmeter': flow.getStatus(),
+        'PIRs':{
+            'sala': pir1.isActive(),
+            'saleta': pir2.isActive(),
+            'taller': pir3.isActive(),
+        }
     }
     yield from picoweb.jsonify(resp, values)
 

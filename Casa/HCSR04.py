@@ -82,5 +82,5 @@ class HCSR04:
             # (the pulse walk the distance twice) and by 29.1 because
             # the sound speed on air (343.2 m/s), that It's equivalent to
             # 0.034320 cm/us that is 1cm each 29.1us
-            print(pulses_array)
+            # print(pulses_array)
             self._cms = sorted(pulses_array)[FILTER_SIZE//2] * 0.017

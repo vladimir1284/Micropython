@@ -26,9 +26,9 @@ class DigitalInput:
         """
         pin: Input pin number
         pull: Pull up or pull down if needed
-        active_high: If the imput is to be consiered active in HIGH state
-        nSamples: Number of verifictions to acept a state change
-        interval: Time interval in miliseconds between input value verifications
+        active_high: If the input is to be considered active in HIGH state
+        nSamples: Number of verifications to accept a state change
+        interval: Time interval in milliseconds between input value verifications
         raising_edge: uAsyncio Event to be set on raising edge detection
         falling_edge: uAsyncio Event to be set on falling edge detection
 
