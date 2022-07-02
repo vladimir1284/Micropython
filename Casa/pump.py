@@ -25,10 +25,6 @@ LOWER_ULTRA = const(18) # Pin number of the ultrasonic sensor in the lower tank
 
 TRIGGER_PIN = const(21) # Pin number of the trigger for ultrasonic sensors
 
-# #TODO instanciate HCSR04
-# trg = Pin(TRIGGER_PIN, Pin.OUT)
-# echo1 = Pin(UPPER_ULTRA, Pin.IN)
-# echo2 = Pin(LOWER_ULTRA, Pin.IN)
 
 class Pump:
 
@@ -113,15 +109,13 @@ class Pump:
         self._stateChange = time.time()
         self._log.debug("{}-> State: {}".format(time.time(), self._state))
 
-    async def getStatus(self):
-        tasks = (self._upperUltra.distance_cm(), self._lowerUltra.distance_cm())
-        res = await asyncio.gather(*tasks)
+    def getStatus(self):
         return {
             'state': self._state,
             'upperFloat': self._upperFloat.isActive(),
-            'upperUltra': int(res[0]),
+            'upperUltra': self._upperUltra.distance_cm(),
             'lowerFloat': self._lowerFloat.isActive(),
-            'lowerUltra': int(res[1]),
+            'lowerUltra': self._lowerUltra.distance_cm(),
             'pump': self._pump.value
         }
 

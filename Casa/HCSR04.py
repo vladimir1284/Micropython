@@ -12,7 +12,7 @@ FILTER_SIZE = const(15)  # Number of elements in the median filter
 
 class HCSR04:
     """
-    Driver to use the untrasonic sensor HC-SR04.
+    Driver to use the ultrasonic sensor HC-SR04.
     The sensor range is between 2cm and 4m.
     The timeouts received listening to echo pin are converted to OSError('Out of range')
     """
@@ -29,8 +29,13 @@ class HCSR04:
         self._trigger = Pin(trigger_pin, mode=Pin.OUT, pull=None)
         self._trigger.value(0)
 
+        self._cms = 0
+
         # Init echo pin (in)
         self._echo = Pin(echo_pin, mode=Pin.IN, pull=None)
+
+        # Start the main task
+        self.pulse_task = asyncio.create_task(self._run())
 
     def _send_pulse_and_wait(self):
         """
@@ -52,23 +57,30 @@ class HCSR04:
                 raise OSError('Out of range')
             raise ex
 
-    async def distance_cm(self):
+    def distance_cm(self):
+        return self._cms
+
+
+    async def _run(self):
         """
         Get the distance in centimeters with floating point operations.
         It uses a median filter of FILTER_SIZE steps to reduce the noise.
         """
-        pulses_array = []
-        for _ in range(FILTER_SIZE):
-            try:
-                pulses_array.append(self._send_pulse_and_wait())
-            except OSError as ex:
-                pulses_array.append(0)
-            await asyncio.sleep(0) # Release Task
+        while True:
+            pulses_array = []
+
+            for _ in range(FILTER_SIZE):
+                # Sample the pulse delay
+                try:
+                    pulses_array.append(self._send_pulse_and_wait())
+                except:
+                    pulses_array.append(0)
+                await asyncio.sleep_ms(1000) # Sample every 100ms
 
 
-        # To calculate the distance we get the pulse_time and divide it by 2 
-        # (the pulse walk the distance twice) and by 29.1 becasue
-        # the sound speed on air (343.2 m/s), that It's equivalent to
-        # 0.034320 cm/us that is 1cm each 29.1us
-        cms = sorted(pulses_array)[FILTER_SIZE//2] * 0.017
-        return cms
+            # To calculate the distance we get the pulse_time and divide it by 2 
+            # (the pulse walk the distance twice) and by 29.1 because
+            # the sound speed on air (343.2 m/s), that It's equivalent to
+            # 0.034320 cm/us that is 1cm each 29.1us
+            print(pulses_array)
+            self._cms = sorted(pulses_array)[FILTER_SIZE//2] * 0.017

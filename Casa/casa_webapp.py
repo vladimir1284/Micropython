@@ -42,7 +42,7 @@ pump = Pump(bomba, loop, cfg, 1)
 def get_data(req, resp): 
     global pump 
     values={
-        'pump': await asyncio.gather(pump.getStatus()),
+        'pump':pump.getStatus(),
         'Vbat': vbat.getVoltage(),
         'pwr': powermeter.getStatus(),
         'ldr': ldr_taller.read(),

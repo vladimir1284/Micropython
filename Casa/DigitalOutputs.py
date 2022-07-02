@@ -47,28 +47,28 @@ buzzer = Dout(
 
 ssr10A = Dout(
     "SSR 10A two pins available",
-    1,
+    4,
     1,
     dOuts595
     )
 
 bomba = Dout(
     "SSR 10A AC line on/off (only 1 wire)",
-    2,
+    3,
     1,
     dOuts595
     )
 
 lamp_hall = Dout(
     "SSR 2A AC line on/off (only 1 wire)",
-    3,
+    2,
     1,
     dOuts595
     )
 
 ssr2A = Dout(
     "SSR 2A AC line on/off (only 1 wire)",
-    4,
+    1,
     1,
     dOuts595
     )
