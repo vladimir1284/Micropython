@@ -59,7 +59,7 @@ bomba = Dout(
     dOuts595
     )
 
-lamp_hall = Dout(
+lamp_taller = Dout(
     "SSR 2A AC line on/off (only 1 wire)",
     2,
     1,

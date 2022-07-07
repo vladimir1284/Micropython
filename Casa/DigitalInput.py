@@ -6,7 +6,6 @@
 import time
 import uasyncio as asyncio
 from uasyncio import Event
-from micropython import const
 from machine import Pin, time_pulse_us
 
 

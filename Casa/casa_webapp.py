@@ -9,20 +9,21 @@ import json
 from machine import Pin, ADC
 
 from pump import Pump
-from DigitalOutputs import bomba
+from DigitalOutputs import bomba, lamp_taller
 from FlowMeter import FlowMeter
 from PowerMeter import PowerMeter
 from VoltMeter import VoltMeter
 from settings import Settings
 from DigitalInput import DigitalInput
 from LDR import LDR
+from Light import Light
 
 
 flow = FlowMeter(13)
 
-pir1 = DigitalInput(14, active_high = True, interval = 10)
-pir2 = DigitalInput(27, active_high = True, interval = 10)
-pir3 = DigitalInput(26, active_high = True, interval = 10)
+pir_taller  = DigitalInput(26, active_high = True, nSamples = 3, interval = 5)
+pir_hall    = DigitalInput(27, active_high = True, nSamples = 3, interval = 5)
+pir_sala    = DigitalInput(14, active_high = True, nSamples = 3, interval = 5)
 
 vbat = VoltMeter(33)
 
@@ -36,22 +37,21 @@ door.atten(ADC.ATTN_11DB)
 
 cfg = Settings(1)
 
-loop = asyncio.get_event_loop()
+pump = Pump(bomba, powermeter, cfg)
 
-pump = Pump(bomba, loop, cfg, 1)
+light_taller = Light(pir_taller, lamp_taller, ldr = ldr_taller)
 
-def get_data(req, resp): 
+def get_data(req, resp):
     global pump 
     values={
         'pump':pump.getStatus(),
         'Vbat': vbat.getVoltage(),
         'pwr': powermeter.getStatus(),
-        'ldr': ldr_taller.getLuminosity(),
+        'light':light_taller.getStatus(),        
         'flowmeter': flow.getStatus(),
         'PIRs':{
-            'sala': pir1.isActive(),
-            'saleta': pir2.isActive(),
-            'taller': pir3.isActive(),
+            'sala': pir_taller.isActive(),
+            'saleta': pir_hall.isActive()
         }
     }
     yield from picoweb.jsonify(resp, values)
@@ -66,8 +66,7 @@ import ulogging as logging
 logging.basicConfig(level=logging.DEBUG)
 
 def main(name):
-    loop.create_task(pump.run())
-
+    
     ROUTES = [
         # You can specify exact URI string matches...
         ("/", lambda req, resp: (yield from app.sendfile(resp, "casa.html"))),

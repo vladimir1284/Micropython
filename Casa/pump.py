@@ -14,8 +14,11 @@ try:
     from typing import Optional
     from ulogging import RootLogger
     from DigitalOutputs import Dout
+    from PowerMeter import PowerMeter
 except ImportError:
     pass
+
+MINPOWER = const(20) # Power in watts to detect a blackout 
 
 UPPER_FLOAT = const(22) # Pin number of the floating sensor in the upper tank
 UPPER_ULTRA = const(19) # Pin number of the ultrasonic sensor in the upper tank
@@ -31,7 +34,7 @@ class Pump:
     def __init__(
         self,
         pumpOut: Dout,
-        loop,
+        pwr: PowerMeter,
         settings: Settings,
         debug: int = 0,
         log: Optional[RootLogger] = None
@@ -52,7 +55,7 @@ class Pump:
         }
 
         self._pump = pumpOut
-        self._loop = loop
+        self._pwr = pwr
         self._cfg  = settings
 
         # High when tank is full
@@ -69,14 +72,17 @@ class Pump:
         self._state = 'IDLE'
         self._stateChange = time.time()
 
-    async def run(self):
+        # Start the main task
+        self.task = asyncio.create_task(self._run())
+
+    async def _run(self):
         while True:
             self._fsmFunction[self._state]()
             await asyncio.sleep(1) # Cycle every 1s
 
     def _idle(self):
         if self._upperFloat.isActive():
-            if not self._lowerFloat.isActive():
+            if not self._lowerFloat.isActive() and self._pwr.getPower() > MINPOWER:
                 self._pump.turnOn()
                 self._setState('PUMPING')
             else:
@@ -84,7 +90,7 @@ class Pump:
 
 
     def _pumping(self):
-        if self._lowerFloat.isActive():
+        if self._lowerFloat.isActive() or self._pwr.getPower() < MINPOWER:
             self._pump.turnOff()
             self._setState('WAIT')
         else:
@@ -97,7 +103,7 @@ class Pump:
                     self._setState('ERROR')
                 
     def _wait(self):
-        if not self._lowerFloat.isActive():
+        if not self._lowerFloat.isActive() and self._pwr.getPower() > MINPOWER:
             self._pump.turnOn()
             self._setState('PUMPING')
 
