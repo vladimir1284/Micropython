@@ -62,7 +62,7 @@ class Light:
     async def _run(self):
         while True:
             self._fsmFunction[self._state]()
-            await asyncio.sleep_ms(100) # Cycle every 10ms
+            await asyncio.sleep_ms(100) # Cycle every 100ms
 
     # ----------------------------------------------------------   
     def _idle(self):

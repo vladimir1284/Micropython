@@ -3,10 +3,11 @@
 # This is a picoweb example showing a centralized web page route
 # specification (classical Django style).
 #
+import gc
 import picoweb
 import uasyncio as asyncio
 import json
-from machine import Pin, ADC
+from machine import Pin, ADC, WDT
 
 from pump import Pump
 from DigitalOutputs import bomba, lamp_taller
@@ -17,7 +18,9 @@ from settings import Settings
 from DigitalInput import DigitalInput
 from LDR import LDR
 from Light import Light
+from Door import Door
 
+#wdt = WDT(timeout=100000)  # enable it with a timeout of 100s
 
 flow = FlowMeter(13)
 
@@ -32,8 +35,7 @@ powermeter = PowerMeter(39)
 
 ldr_taller = LDR(36)
 
-door = ADC(Pin(34))
-door.atten(ADC.ATTN_11DB)
+door = Door(34)
 
 cfg = Settings(1)
 
@@ -42,7 +44,6 @@ pump = Pump(bomba, powermeter, cfg)
 light_taller = Light(pir_taller, lamp_taller, ldr = ldr_taller)
 
 def get_data(req, resp):
-    global pump 
     values={
         'pump':pump.getStatus(),
         'Vbat': vbat.getVoltage(),
@@ -52,21 +53,29 @@ def get_data(req, resp):
         'PIRs':{
             'sala': pir_taller.isActive(),
             'saleta': pir_hall.isActive()
-        }
+        },
+        'door': door.getStatus()
     }
     yield from picoweb.jsonify(resp, values)
 
-def ack_error(req, resp):    
-    global pump
+def ack_error(req, resp):
     pump.ackError()
     yield from picoweb.jsonify(resp, {'result':'Successfully acknowledged!'})
+
+async def clean():
+    while True:
+        wdt.feed() # reset timer (feed watchdog)
+        gc.collect()
+        await asyncio.sleep(1)
 
 import ulogging as logging
 #logging.basicConfig(level=logging.INFO)
 logging.basicConfig(level=logging.DEBUG)
 
 def main(name):
-    
+    # loop = asyncio.get_event_loop()
+    # loop.create_task(clean())
+
     ROUTES = [
         # You can specify exact URI string matches...
         ("/", lambda req, resp: (yield from app.sendfile(resp, "casa.html"))),

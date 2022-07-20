@@ -66,8 +66,8 @@ class Pump:
                                         active_high = False,
                                         interval = 10)
 
-        self._lowerUltra = HCSR04(TRIGGER_PIN, LOWER_ULTRA, 5000)
-        self._upperUltra = HCSR04(TRIGGER_PIN, UPPER_ULTRA, 9000)
+        # self._lowerUltra = HCSR04(TRIGGER_PIN, LOWER_ULTRA, 5000)
+        # self._upperUltra = HCSR04(TRIGGER_PIN, UPPER_ULTRA, 9000)
 
         self._state = 'IDLE'
         self._stateChange = time.time()
@@ -119,9 +119,9 @@ class Pump:
         return {
             'state': self._state,
             'upperFloat': self._upperFloat.isActive(),
-            'upperUltra': self._upperUltra.distance_cm(),
+            # 'upperUltra': self._upperUltra.distance_cm(),
             'lowerFloat': self._lowerFloat.isActive(),
-            'lowerUltra': self._lowerUltra.distance_cm(),
+            # 'lowerUltra': self._lowerUltra.distance_cm(),
             'pump': self._pump.value
         }
 
