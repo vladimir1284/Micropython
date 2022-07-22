@@ -15,7 +15,8 @@ class DigitalInput:
     """
     def __init__(
         self,
-        pin,
+        pin: int,
+        description: str,
         pull = None,
         active_high = True,
         nSamples = 5, 
@@ -45,6 +46,7 @@ class DigitalInput:
         self._currentValue = True
         self._raising_edge = raising_edge
         self._falling_edge = falling_edge
+        self.description = description
         
         # Start the main task
         self.task = asyncio.create_task(self._run())

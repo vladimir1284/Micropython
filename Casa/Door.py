@@ -45,4 +45,4 @@ class Door:
 
     # ----------------------------------------------------------
     def getStatus(self):
-        return self._status + " -> %i" % self._pin.read()
+        return self._status# + " -> %i" % self._pin.read()

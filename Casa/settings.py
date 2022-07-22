@@ -32,6 +32,8 @@ class Settings:
             # Set to default values
             self.settings = {
                 'PUMPING_MAX_TIME': 600, # Maximum continuous pump operation in seconds
+                'ALARM_DELAY': 5, # Delay before arming the alarm
+                'ALARM_DISARM_DELAY': 20, # Delay for introducing password
             }
             self.saveSettings()
 

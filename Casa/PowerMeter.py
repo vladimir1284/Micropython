@@ -100,7 +100,7 @@ class PowerMeter:
     # ----------------------------------------------------------        
     def getPower(self):
         """
-        Returns the power (watt) 
+        Returns the power (watt)
         """
         return self._power
        

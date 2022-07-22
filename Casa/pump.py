@@ -60,9 +60,11 @@ class Pump:
 
         # High when tank is full
         self._lowerFloat = DigitalInput(LOWER_FLOAT,
+                                        'LowerFloat',
                                         active_high = False,
                                         interval = 10)
         self._upperFloat = DigitalInput(UPPER_FLOAT,
+                                        'UpperFloat',
                                         active_high = False,
                                         interval = 10)
 
